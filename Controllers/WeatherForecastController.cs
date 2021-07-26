@@ -23,20 +23,32 @@ namespace cookingBook.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet("{id}")]
+        public IEnumerable<WeatherForecast> Get([FromRoute]int id)
         {
             var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            return Enumerable.Range(1, 1).Select(index => new WeatherForecast
             {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = rng.Next(-20, 55),
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
+        }
 
-            var test = default(int);
-            test.CompareTo(5);
+        [HttpGet]
+        public IEnumerable<WeatherForecast> GetAll()
+        {
+            var rng = new Random();
+            return Enumerable.Range(1, 20).Select(Index => new WeatherForecast
+            {
+                Date = DateTime.Now.AddDays(Index),
+                TemperatureC = rng.Next(-20, 55),
+                Summary = Summaries[rng.Next(Summaries.Length)]
+            })
+            .ToArray();
+
+
         }
     }
 }
