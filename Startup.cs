@@ -1,3 +1,4 @@
+using cookBook.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -10,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using cookBook;
 
 namespace cookingBook
 {
@@ -27,10 +29,12 @@ namespace cookingBook
         {
 
             services.AddControllers();
+            services.AddDbContext<CookBookDbContext>();
+            services.AddScoped<CookBookSeeder>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, CookBookSeeder seeder)
         {
             if (env.IsDevelopment())
             {
