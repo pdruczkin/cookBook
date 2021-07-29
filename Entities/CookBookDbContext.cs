@@ -39,6 +39,7 @@ namespace cookBook.Entities
 
             modelBuilder.Entity<Step>()
                 .Property(r => r.Description)
+                .HasMaxLength(250)
                 .IsRequired();
 
             modelBuilder.Entity<Ingredient>()

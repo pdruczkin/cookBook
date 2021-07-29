@@ -12,8 +12,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using cookBook;
+using cookBook.Seeders;
 
-namespace cookingBook
+namespace cookBook
 {
     public class Startup
     {
@@ -36,6 +37,8 @@ namespace cookingBook
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, CookBookSeeder seeder)
         {
+            seeder.Seed();
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

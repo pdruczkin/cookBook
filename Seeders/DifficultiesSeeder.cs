@@ -1,0 +1,28 @@
+﻿using System.Collections.Generic;
+using cookBook.Entities.DifficultyProperties;
+
+namespace cookBook.Seeders
+{
+    public static class DifficultiesSeeder
+    {
+        public static List<Difficulty> GetDifficulties()
+        {
+            var list = new List<Difficulty>()
+            {
+                new Difficulty()
+                {
+                    Name = "easy"
+                },
+                new Difficulty()
+                {
+                    Name = "medium"
+                },
+                new Difficulty()
+                {
+                    Name = "hard"
+                }
+            };
+            return list;
+        }
+    }
+}
