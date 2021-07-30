@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using cookBook.Entities;
+using cookBook.Models;
 using cookBook.Services;
 
 namespace cookBook.Controllers
@@ -20,13 +21,26 @@ namespace cookBook.Controllers
 
 
         [HttpGet]
-        public ActionResult<IEnumerable<Recipe>> GetAll()
+        public ActionResult<IEnumerable<RecipeDto>> GetAll()
         {
             var recipes = _service.GetAll();
             
             return Ok(recipes);
         }
 
+        [HttpGet("{id}")]
+        public ActionResult<RecipeDto> Get([FromRoute] int id)
+        {
+            var recipe = _service.Get(id);
+
+            if (recipe is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(recipe);
+
+        }
 
 
 

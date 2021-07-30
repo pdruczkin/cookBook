@@ -10,6 +10,8 @@ namespace cookBook.Services
     public interface ICookBookService
     {
         IEnumerable<RecipeDto> GetAll();
+        RecipeDto Get(int id);
+
     }
     
     
@@ -43,7 +45,21 @@ namespace cookBook.Services
             return recipiesDto;
         }
 
+        public RecipeDto Get(int id)
+        {
+            var recipe = _dbContext
+                .Recipes
+                .Include(r => r.Steps)
+                .Include(r => r.Difficulty).ThenInclude(s => s.Difficulty)
+                .Include(r => r.Ingredients).ThenInclude(s => s.MeasurementQuantity)
+                .Include(r => r.Ingredients).ThenInclude(s => s.MeasurementUnit)
+                .Include(r => r.Ingredients).ThenInclude(s => s.Ingredient)
+                .FirstOrDefault(r => r.Id == id);
 
+            var recipeDto = _mapper.Map<RecipeDto>(recipe);
+
+            return recipeDto;
+        }
 
 
 
