@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using cookBook.Entities.DifficultyProperties;
 using cookBook.Entities.IngredientProperties;
 
 namespace cookBook.Entities
@@ -18,6 +19,8 @@ namespace cookBook.Entities
         
         public virtual ICollection<RecipeIngredient> Ingredients{ get; set; }
         public virtual List<Step> Steps { get; set; }
+        public virtual RecipeDifficulty Difficulty { get; set; }
+        
 
 
 

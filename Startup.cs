@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using cookBook;
 using cookBook.Seeders;
+using cookBook.Services;
 
 namespace cookBook
 {
@@ -32,6 +33,8 @@ namespace cookBook
             services.AddControllers();
             services.AddDbContext<CookBookDbContext>();
             services.AddScoped<CookBookSeeder>();
+            services.AddAutoMapper(this.GetType().Assembly);
+            services.AddScoped<ICookBookService, CookBookService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

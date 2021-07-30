@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using cookBook.Entities;
+using cookBook.Entities.DifficultyProperties;
 using cookBook.Entities.IngredientProperties;
 
 namespace cookBook.Seeders
@@ -58,9 +59,20 @@ namespace cookBook.Seeders
                         new Step()
                         {
                             Description = "add half of mint leaves, rest use as decoration"
-                        }                    }
+                        }
+                    },
+                    Difficulty = new RecipeDifficulty()
+                    {
+                        Difficulty = new Difficulty()
+                        {
+                            Name = "easy"
+                        }
+                    }
+                    
                 }
             };
+
+            
            
             return list;
         }

@@ -11,10 +11,6 @@ namespace cookBook.Seeders
             {
                 new Difficulty()
                 {
-                    Name = "easy"
-                },
-                new Difficulty()
-                {
                     Name = "medium"
                 },
                 new Difficulty()

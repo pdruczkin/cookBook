@@ -6,9 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace cookBook.Entities.DifficultyProperties
 {
-    [Keyless]
+    
     public class RecipeDifficulty
     {
+        public int Id { get; set; }
         public int DifficultyId { get; set; }
         public virtual Difficulty Difficulty { get; set; }
 
