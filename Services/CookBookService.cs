@@ -12,6 +12,8 @@ namespace cookBook.Services
         IEnumerable<RecipeDto> GetAll();
         RecipeDto Get(int id);
 
+        int CreateRecipe(CreateRecipeDto dto);
+
     }
     
     
@@ -61,8 +63,12 @@ namespace cookBook.Services
             return recipeDto;
         }
 
+        public int CreateRecipe(CreateRecipeDto dto)
+        {
+            var recipe = _mapper.Map<Recipe>(dto);
 
+            return recipe.Id;
 
-
+        }
     }
 }

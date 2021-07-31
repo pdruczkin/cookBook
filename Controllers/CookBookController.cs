@@ -39,6 +39,15 @@ namespace cookBook.Controllers
             }
 
             return Ok(recipe);
+        }
+
+
+        [HttpPost]
+        public ActionResult CreateRecipe([FromBody] CreateRecipeDto dto)
+        {
+            var id = _service.CreateRecipe(dto);
+
+            return Created($"api/cookBook/{id}",null);
 
         }
 
