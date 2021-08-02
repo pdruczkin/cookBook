@@ -61,12 +61,9 @@ namespace cookBook.Seeders
                             Description = "add half of mint leaves, rest use as decoration"
                         }
                     },
-                    Difficulty = new RecipeDifficulty()
+                    Difficulty = new Difficulty()
                     {
-                        Difficulty = new Difficulty()
-                        {
-                            Name = "easy"
-                        }
+                        Name = "easy"
                     }
                     
                 }

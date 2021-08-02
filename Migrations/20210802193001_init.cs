@@ -2,7 +2,7 @@
 
 namespace cookBook.Migrations
 {
-    public partial class First : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,7 +12,7 @@ namespace cookBook.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -67,11 +67,18 @@ namespace cookBook.Migrations
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PrepareTime = table.Column<int>(type: "int", nullable: false),
-                    SummaryTime = table.Column<int>(type: "int", nullable: false)
+                    SummaryTime = table.Column<int>(type: "int", nullable: false),
+                    DifficultyId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Recipes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Recipes_Difficulties_DifficultyId",
+                        column: x => x.DifficultyId,
+                        principalTable: "Difficulties",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -120,7 +127,7 @@ namespace cookBook.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     RecipeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -155,6 +162,11 @@ namespace cookBook.Migrations
                 column: "RecipeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Recipes_DifficultyId",
+                table: "Recipes",
+                column: "DifficultyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Step_RecipeId",
                 table: "Step",
                 column: "RecipeId");
@@ -162,9 +174,6 @@ namespace cookBook.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Difficulties");
-
             migrationBuilder.DropTable(
                 name: "RecipeIngredient");
 
@@ -182,6 +191,9 @@ namespace cookBook.Migrations
 
             migrationBuilder.DropTable(
                 name: "Recipes");
+
+            migrationBuilder.DropTable(
+                name: "Difficulties");
         }
     }
 }

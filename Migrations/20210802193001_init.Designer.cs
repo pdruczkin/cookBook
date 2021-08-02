@@ -10,8 +10,8 @@ using cookBook.Entities;
 namespace cookBook.Migrations
 {
     [DbContext(typeof(CookBookDbContext))]
-    [Migration("20210730101339_Add virtual Difficulty Referance")]
-    partial class AddvirtualDifficultyReferance
+    [Migration("20210802193001_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -29,7 +29,6 @@ namespace cookBook.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -157,7 +156,6 @@ namespace cookBook.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
@@ -209,7 +207,7 @@ namespace cookBook.Migrations
             modelBuilder.Entity("cookBook.Entities.Recipe", b =>
                 {
                     b.HasOne("cookBook.Entities.DifficultyProperties.Difficulty", "Difficulty")
-                        .WithMany()
+                        .WithMany("Recipes")
                         .HasForeignKey("DifficultyId");
 
                     b.Navigation("Difficulty");
@@ -224,6 +222,11 @@ namespace cookBook.Migrations
                         .IsRequired();
 
                     b.Navigation("Recipe");
+                });
+
+            modelBuilder.Entity("cookBook.Entities.DifficultyProperties.Difficulty", b =>
+                {
+                    b.Navigation("Recipes");
                 });
 
             modelBuilder.Entity("cookBook.Entities.Recipe", b =>

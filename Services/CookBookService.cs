@@ -37,6 +37,7 @@ namespace cookBook.Services
             var recipies = _dbContext
                 .Recipes
                 .Include(r => r.Steps)
+                .Include(r => r.Difficulty)
                 .Include(r => r.Ingredients).ThenInclude(s => s.MeasurementQuantity)
                 .Include(r => r.Ingredients).ThenInclude(s => s.MeasurementUnit)
                 .Include(r => r.Ingredients).ThenInclude(s => s.Ingredient)
@@ -52,6 +53,7 @@ namespace cookBook.Services
             var recipe = _dbContext
                 .Recipes
                 .Include(r => r.Steps)
+                .Include(r => r.Difficulty)
                 .Include(r => r.Ingredients).ThenInclude(s => s.MeasurementQuantity)
                 .Include(r => r.Ingredients).ThenInclude(s => s.MeasurementUnit)
                 .Include(r => r.Ingredients).ThenInclude(s => s.Ingredient)
@@ -78,11 +80,11 @@ namespace cookBook.Services
                 Description = dto.Description,
                 PrepareTime = dto.PrepareTime,
                 SummaryTime = dto.SummaryTime,
-                Steps = GetStepsFromStrings(dto.Steps)
+                Steps = GetStepsFromStrings(dto.Steps),
+                Difficulty = _dbContext.Difficulties.FirstOrDefault(r => r.Name == dto.Difficulty)
             };
 
             return recipe;
-
         }
 
         private List<Step> GetStepsFromStrings(IEnumerable<string> list)
