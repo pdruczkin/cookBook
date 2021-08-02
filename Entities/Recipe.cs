@@ -19,7 +19,7 @@ namespace cookBook.Entities
         
         public virtual ICollection<RecipeIngredient> Ingredients{ get; set; }
         public virtual List<Step> Steps { get; set; }
-        public virtual RecipeDifficulty Difficulty { get; set; }
+        public virtual Difficulty Difficulty { get; set; }
         
 
 

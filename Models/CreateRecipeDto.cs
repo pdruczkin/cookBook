@@ -15,5 +15,6 @@ namespace cookBook.Models
 
         public string Difficulty { get; set; }
 
+        
     }
 }

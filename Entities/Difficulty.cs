@@ -11,6 +11,7 @@ namespace cookBook.Entities.DifficultyProperties
 
         public string Name { get; set; }
 
+        public IEnumerable<Recipe> Recipes { get; set; }
         
     }
 }

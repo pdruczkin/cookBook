@@ -34,18 +34,18 @@ namespace cookBook.Entities
                 .IsRequired();
 
             modelBuilder.Entity<Difficulty>()
-                .Property(r => r.Name)
-                .IsRequired();
+                .Property(r => r.Name);
+                
 
             modelBuilder.Entity<Step>()
                 .Property(r => r.Description)
-                .HasMaxLength(250)
-                .IsRequired();
+                .HasMaxLength(250);
 
             modelBuilder.Entity<Ingredient>()
                 .Property(r => r.Name)
                 .IsRequired()
                 .HasMaxLength(50);
+            
             modelBuilder.Entity<MeasurementUnit>()
                 .Property(r => r.Description)
                 .IsRequired()
@@ -55,6 +55,7 @@ namespace cookBook.Entities
                 .Property(r => r.Amount)
                 .IsRequired();
 
+            
 
 
         }

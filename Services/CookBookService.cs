@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using cookBook.Entities;
@@ -15,8 +16,8 @@ namespace cookBook.Services
         int CreateRecipe(CreateRecipeDto dto);
 
     }
-    
-    
+
+
     public class CookBookService : ICookBookService
     {
         private readonly CookBookDbContext _dbContext;
@@ -36,7 +37,6 @@ namespace cookBook.Services
             var recipies = _dbContext
                 .Recipes
                 .Include(r => r.Steps)
-                .Include(r => r.Difficulty).ThenInclude(s => s.Difficulty)
                 .Include(r => r.Ingredients).ThenInclude(s => s.MeasurementQuantity)
                 .Include(r => r.Ingredients).ThenInclude(s => s.MeasurementUnit)
                 .Include(r => r.Ingredients).ThenInclude(s => s.Ingredient)
@@ -52,7 +52,6 @@ namespace cookBook.Services
             var recipe = _dbContext
                 .Recipes
                 .Include(r => r.Steps)
-                .Include(r => r.Difficulty).ThenInclude(s => s.Difficulty)
                 .Include(r => r.Ingredients).ThenInclude(s => s.MeasurementQuantity)
                 .Include(r => r.Ingredients).ThenInclude(s => s.MeasurementUnit)
                 .Include(r => r.Ingredients).ThenInclude(s => s.Ingredient)
@@ -65,10 +64,39 @@ namespace cookBook.Services
 
         public int CreateRecipe(CreateRecipeDto dto)
         {
-            var recipe = _mapper.Map<Recipe>(dto);
+            var recipe = MapFromDto(dto);
 
             return recipe.Id;
 
         }
-    }
+
+        private Recipe MapFromDto(CreateRecipeDto dto)
+        {
+            Recipe recipe = new Recipe()
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                PrepareTime = dto.PrepareTime,
+                SummaryTime = dto.SummaryTime,
+                Steps = GetStepsFromStrings(dto.Steps)
+            };
+
+            return recipe;
+
+        }
+
+        private List<Step> GetStepsFromStrings(IEnumerable<string> list)
+        {
+            List<Step> steps = new List<Step>();
+
+
+            foreach (var textStep in list)
+            {
+                steps.Add(new Step() { Description = textStep });
+            }
+
+            return steps;
+        }
+
+}
 }
