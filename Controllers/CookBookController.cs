@@ -10,6 +10,7 @@ using cookBook.Services;
 namespace cookBook.Controllers
 {
     [Route("api/cookBook")]
+    [ApiController]
     public class CookBookController : ControllerBase
     {
         private readonly ICookBookService _service;
