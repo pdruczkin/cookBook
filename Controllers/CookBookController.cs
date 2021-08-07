@@ -46,6 +46,11 @@ namespace cookBook.Controllers
         [HttpPost]
         public ActionResult CreateRecipe([FromBody] CreateRecipeDto dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            
             var id = _service.CreateRecipe(dto);
 
             return Created($"api/cookBook/{id}",null);

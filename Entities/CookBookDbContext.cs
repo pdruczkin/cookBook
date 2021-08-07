@@ -30,9 +30,6 @@ namespace cookBook.Entities
                 .Property(r => r.SummaryTime)
                 .IsRequired();
 
-            modelBuilder.Entity<Difficulty>()
-                .Property(r => r.Name);
-            
             modelBuilder.Entity<Step>()
                 .Property(r => r.Description)
                 .HasMaxLength(250);
@@ -41,6 +38,14 @@ namespace cookBook.Entities
                 .Property(r => r.Name)
                 .IsRequired()
                 .HasMaxLength(50);
+            modelBuilder.Entity<Ingredient>()
+                .Property(r => r.Amount)
+                .IsRequired();
+            modelBuilder.Entity<Ingredient>()
+                .Property(r => r.Unit)
+                .IsRequired()
+                .HasMaxLength(50);
+
 
 
             modelBuilder.Entity<RecipeIngredient>()
