@@ -11,7 +11,7 @@ namespace cookBook.Models
         public int PrepareTime { get; set; }
         public int SummaryTime { get; set; }
 
-        public IEnumerable<IngredientsDto> Ingredients { get; set; }
+        public IEnumerable<IngredientDto> Ingredients { get; set; }
 
         public IEnumerable<string> Steps { get; set; }
 

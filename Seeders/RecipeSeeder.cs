@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using cookBook.Entities;
 using cookBook.Entities.DifficultyProperties;
-using cookBook.Entities.IngredientProperties;
 
 namespace cookBook.Seeders
 {
@@ -23,30 +22,18 @@ namespace cookBook.Seeders
                         {
                             Ingredient = new Ingredient()
                             {
-                                Name = "Bacardi"
-                            },
-                            MeasurementQuantity = new MeasurementQuantity()
-                            {
+                                Name = "Bacardi",
+                                Unit = "ml",
                                 Amount = 50
-                            },
-                            MeasurementUnit = new MeasurementUnit()
-                            {
-                                Description = "ml"
                             }
                         },
                         new RecipeIngredient()
                         {
                             Ingredient = new Ingredient()
                             {
-                                Name = "mint"
-                            },
-                            MeasurementQuantity = new MeasurementQuantity()
-                            {
+                                Name = "mint",
+                                Unit = "leaves",
                                 Amount = 15
-                            },
-                            MeasurementUnit = new MeasurementUnit()
-                            {
-                                Description = "leaves"
                             }
                         }
                     },

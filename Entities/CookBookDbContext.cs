@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using cookBook.Entities.DifficultyProperties;
-using cookBook.Entities.IngredientProperties;
 
 namespace cookBook.Entities
 {
@@ -16,8 +15,6 @@ namespace cookBook.Entities
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<Difficulty> Difficulties { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
-        public DbSet<MeasurementUnit> MeasurementUnits { get; set; }
-        public DbSet<MeasurementQuantity> MeasurementQuantities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -35,8 +32,7 @@ namespace cookBook.Entities
 
             modelBuilder.Entity<Difficulty>()
                 .Property(r => r.Name);
-                
-
+            
             modelBuilder.Entity<Step>()
                 .Property(r => r.Description)
                 .HasMaxLength(250);
@@ -45,17 +41,11 @@ namespace cookBook.Entities
                 .Property(r => r.Name)
                 .IsRequired()
                 .HasMaxLength(50);
-            
-            modelBuilder.Entity<MeasurementUnit>()
-                .Property(r => r.Description)
-                .IsRequired()
-                .HasMaxLength(50);
 
-            modelBuilder.Entity<MeasurementQuantity>()
-                .Property(r => r.Amount)
-                .IsRequired();
 
-            
+            modelBuilder.Entity<RecipeIngredient>()
+                .HasKey(x => new {x.RecipeId, x.IngredientId});
+
 
 
         }

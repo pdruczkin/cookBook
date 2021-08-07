@@ -10,7 +10,7 @@ using cookBook.Entities;
 namespace cookBook.Migrations
 {
     [DbContext(typeof(CookBookDbContext))]
-    [Migration("20210802193001_init")]
+    [Migration("20210804174334_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -36,26 +36,9 @@ namespace cookBook.Migrations
                     b.ToTable("Difficulties");
                 });
 
-            modelBuilder.Entity("cookBook.Entities.IngredientProperties.Ingredient", b =>
+            modelBuilder.Entity("cookBook.Entities.Ingredient", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Ingredients");
-                });
-
-            modelBuilder.Entity("cookBook.Entities.IngredientProperties.MeasurementQuantity", b =>
-                {
-                    b.Property<int>("Id")
+                    b.Property<int>("IngredientId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -63,63 +46,22 @@ namespace cookBook.Migrations
                     b.Property<int>("Amount")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("MeasurementQuantities");
-                });
-
-            modelBuilder.Entity("cookBook.Entities.IngredientProperties.MeasurementUnit", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Description")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.HasKey("Id");
+                    b.Property<string>("Unit")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("MeasurementUnits");
-                });
+                    b.HasKey("IngredientId");
 
-            modelBuilder.Entity("cookBook.Entities.IngredientProperties.RecipeIngredient", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("IngredientId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MeasurementQuantityId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MeasurementUnitId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IngredientId");
-
-                    b.HasIndex("MeasurementQuantityId");
-
-                    b.HasIndex("MeasurementUnitId");
-
-                    b.HasIndex("RecipeId");
-
-                    b.ToTable("RecipeIngredient");
+                    b.ToTable("Ingredients");
                 });
 
             modelBuilder.Entity("cookBook.Entities.Recipe", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("RecipeId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -141,11 +83,26 @@ namespace cookBook.Migrations
                     b.Property<int>("SummaryTime")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("RecipeId");
 
                     b.HasIndex("DifficultyId");
 
                     b.ToTable("Recipes");
+                });
+
+            modelBuilder.Entity("cookBook.Entities.RecipeIngredient", b =>
+                {
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("IngredientId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RecipeId", "IngredientId");
+
+                    b.HasIndex("IngredientId");
+
+                    b.ToTable("RecipeIngredient");
                 });
 
             modelBuilder.Entity("cookBook.Entities.Step", b =>
@@ -169,23 +126,20 @@ namespace cookBook.Migrations
                     b.ToTable("Step");
                 });
 
-            modelBuilder.Entity("cookBook.Entities.IngredientProperties.RecipeIngredient", b =>
+            modelBuilder.Entity("cookBook.Entities.Recipe", b =>
                 {
-                    b.HasOne("cookBook.Entities.IngredientProperties.Ingredient", "Ingredient")
+                    b.HasOne("cookBook.Entities.DifficultyProperties.Difficulty", "Difficulty")
+                        .WithMany("Recipes")
+                        .HasForeignKey("DifficultyId");
+
+                    b.Navigation("Difficulty");
+                });
+
+            modelBuilder.Entity("cookBook.Entities.RecipeIngredient", b =>
+                {
+                    b.HasOne("cookBook.Entities.Ingredient", "Ingredient")
                         .WithMany()
                         .HasForeignKey("IngredientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("cookBook.Entities.IngredientProperties.MeasurementQuantity", "MeasurementQuantity")
-                        .WithMany()
-                        .HasForeignKey("MeasurementQuantityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("cookBook.Entities.IngredientProperties.MeasurementUnit", "MeasurementUnit")
-                        .WithMany()
-                        .HasForeignKey("MeasurementUnitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -197,20 +151,7 @@ namespace cookBook.Migrations
 
                     b.Navigation("Ingredient");
 
-                    b.Navigation("MeasurementQuantity");
-
-                    b.Navigation("MeasurementUnit");
-
                     b.Navigation("Recipe");
-                });
-
-            modelBuilder.Entity("cookBook.Entities.Recipe", b =>
-                {
-                    b.HasOne("cookBook.Entities.DifficultyProperties.Difficulty", "Difficulty")
-                        .WithMany("Recipes")
-                        .HasForeignKey("DifficultyId");
-
-                    b.Navigation("Difficulty");
                 });
 
             modelBuilder.Entity("cookBook.Entities.Step", b =>

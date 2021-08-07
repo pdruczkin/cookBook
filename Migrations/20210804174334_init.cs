@@ -23,46 +23,22 @@ namespace cookBook.Migrations
                 name: "Ingredients",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    IngredientId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ingredients", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MeasurementQuantities",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Amount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MeasurementQuantities", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "MeasurementUnits",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Description = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_MeasurementUnits", x => x.Id);
+                    table.PrimaryKey("PK_Ingredients", x => x.IngredientId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Recipes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    RecipeId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -72,7 +48,7 @@ namespace cookBook.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Recipes", x => x.Id);
+                    table.PrimaryKey("PK_Recipes", x => x.RecipeId);
                     table.ForeignKey(
                         name: "FK_Recipes_Difficulties_DifficultyId",
                         column: x => x.DifficultyId,
@@ -85,39 +61,23 @@ namespace cookBook.Migrations
                 name: "RecipeIngredient",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     RecipeId = table.Column<int>(type: "int", nullable: false),
-                    MeasurementQuantityId = table.Column<int>(type: "int", nullable: false),
-                    MeasurementUnitId = table.Column<int>(type: "int", nullable: false),
                     IngredientId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RecipeIngredient", x => x.Id);
+                    table.PrimaryKey("PK_RecipeIngredient", x => new { x.RecipeId, x.IngredientId });
                     table.ForeignKey(
                         name: "FK_RecipeIngredient_Ingredients_IngredientId",
                         column: x => x.IngredientId,
                         principalTable: "Ingredients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RecipeIngredient_MeasurementQuantities_MeasurementQuantityId",
-                        column: x => x.MeasurementQuantityId,
-                        principalTable: "MeasurementQuantities",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RecipeIngredient_MeasurementUnits_MeasurementUnitId",
-                        column: x => x.MeasurementUnitId,
-                        principalTable: "MeasurementUnits",
-                        principalColumn: "Id",
+                        principalColumn: "IngredientId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RecipeIngredient_Recipes_RecipeId",
                         column: x => x.RecipeId,
                         principalTable: "Recipes",
-                        principalColumn: "Id",
+                        principalColumn: "RecipeId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -137,7 +97,7 @@ namespace cookBook.Migrations
                         name: "FK_Step_Recipes_RecipeId",
                         column: x => x.RecipeId,
                         principalTable: "Recipes",
-                        principalColumn: "Id",
+                        principalColumn: "RecipeId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -145,21 +105,6 @@ namespace cookBook.Migrations
                 name: "IX_RecipeIngredient_IngredientId",
                 table: "RecipeIngredient",
                 column: "IngredientId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RecipeIngredient_MeasurementQuantityId",
-                table: "RecipeIngredient",
-                column: "MeasurementQuantityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RecipeIngredient_MeasurementUnitId",
-                table: "RecipeIngredient",
-                column: "MeasurementUnitId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RecipeIngredient_RecipeId",
-                table: "RecipeIngredient",
-                column: "RecipeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Recipes_DifficultyId",
@@ -182,12 +127,6 @@ namespace cookBook.Migrations
 
             migrationBuilder.DropTable(
                 name: "Ingredients");
-
-            migrationBuilder.DropTable(
-                name: "MeasurementQuantities");
-
-            migrationBuilder.DropTable(
-                name: "MeasurementUnits");
 
             migrationBuilder.DropTable(
                 name: "Recipes");

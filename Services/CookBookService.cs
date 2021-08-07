@@ -38,9 +38,7 @@ namespace cookBook.Services
                 .Recipes
                 .Include(r => r.Steps)
                 .Include(r => r.Difficulty)
-                .Include(r => r.Ingredients).ThenInclude(s => s.MeasurementQuantity)
-                .Include(r => r.Ingredients).ThenInclude(s => s.MeasurementUnit)
-                .Include(r => r.Ingredients).ThenInclude(s => s.Ingredient)
+                .Include(r => r.Ingredients)
                 .ToList();
 
             var recipiesDto = _mapper.Map<List<RecipeDto>>(recipies);
@@ -54,10 +52,8 @@ namespace cookBook.Services
                 .Recipes
                 .Include(r => r.Steps)
                 .Include(r => r.Difficulty)
-                .Include(r => r.Ingredients).ThenInclude(s => s.MeasurementQuantity)
-                .Include(r => r.Ingredients).ThenInclude(s => s.MeasurementUnit)
-                .Include(r => r.Ingredients).ThenInclude(s => s.Ingredient)
-                .FirstOrDefault(r => r.Id == id);
+                .Include(r => r.Ingredients)
+                .FirstOrDefault(r => r.RecipeId == id);
 
             var recipeDto = _mapper.Map<RecipeDto>(recipe);
 
@@ -66,39 +62,18 @@ namespace cookBook.Services
 
         public int CreateRecipe(CreateRecipeDto dto)
         {
-            var recipe = MapFromDto(dto);
+            var recipe = _mapper.Map<Recipe>(dto);
 
-            return recipe.Id;
+            _dbContext.Recipes.Add(recipe);
+            _dbContext.SaveChanges();
 
+
+            return recipe.RecipeId;
         }
 
-        private Recipe MapFromDto(CreateRecipeDto dto)
-        {
-            Recipe recipe = new Recipe()
-            {
-                Name = dto.Name,
-                Description = dto.Description,
-                PrepareTime = dto.PrepareTime,
-                SummaryTime = dto.SummaryTime,
-                Steps = GetStepsFromStrings(dto.Steps),
-                Difficulty = _dbContext.Difficulties.FirstOrDefault(r => r.Name == dto.Difficulty)
-            };
+       
 
-            return recipe;
-        }
+        
 
-        private List<Step> GetStepsFromStrings(IEnumerable<string> list)
-        {
-            List<Step> steps = new List<Step>();
-
-
-            foreach (var textStep in list)
-            {
-                steps.Add(new Step() { Description = textStep });
-            }
-
-            return steps;
-        }
-
-}
+    }
 }
