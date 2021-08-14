@@ -18,7 +18,7 @@ namespace cookBook.Entities
         public int SummaryTime { get; set; }
 
         
-        public virtual ICollection<RecipeIngredient> Ingredients{ get; set; }
+        public virtual ICollection<RecipeIngredient> RecipeIngredients{ get; set; }
 
 
         public virtual List<Step> Steps { get; set; }

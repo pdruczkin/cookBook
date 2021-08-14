@@ -2,7 +2,7 @@
 
 namespace cookBook.Migrations
 {
-    public partial class init : Migration
+    public partial class initmigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,7 +26,7 @@ namespace cookBook.Migrations
                     IngredientId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Unit = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Unit = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Amount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

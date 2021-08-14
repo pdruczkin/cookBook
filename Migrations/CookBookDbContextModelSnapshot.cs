@@ -50,7 +50,9 @@ namespace cookBook.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Unit")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("IngredientId");
 

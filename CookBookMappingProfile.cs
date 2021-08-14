@@ -20,10 +20,8 @@ namespace cookBook
                 .ForMember(m => m.Amount, c => c.MapFrom(s => s.Ingredient.Amount))
                 .ForMember(m => m.Unit, c => c.MapFrom(s => s.Ingredient.Unit));
                 
-
-
             CreateMap<Recipe, RecipeDto>()
-                .ForMember(m => m.Ingredients, c => c.MapFrom(s => s.Ingredients))
+                .ForMember(m => m.Ingredients, c => c.MapFrom(s => s.RecipeIngredients))
                 .ForMember(m => m.Steps, c => c.MapFrom(s => s.Steps.Select(y => y.Description)))
                 .ForMember(m => m.Difficulty, c => c.MapFrom(s => s.Difficulty.Name));
 
@@ -34,20 +32,27 @@ namespace cookBook
 
             CreateMap<String, Step>()
                 .ForMember(m => m.Description, c => c.MapFrom(s => s));
-            CreateMap<IEnumerable<String>, Recipe>();
-                
-            
-            CreateMap<IEnumerable<IngredientDto>, IEnumerable<IngredientDto>>();
+            CreateMap<ICollection<String>, Recipe>();
+
+
 
             CreateMap<IngredientDto, RecipeIngredient>()
                 .ForMember(m => m.Ingredient, c => c.MapFrom(s => s));
 
             CreateMap<IngredientDto, Ingredient>();
-                
 
-            CreateMap<IEnumerable<IngredientDto>, Recipe>();
 
-            CreateMap<CreateRecipeDto, Recipe>();
+
+            //CreateMap<ICollection<IngredientDto>, ICollection<RecipeIngredient>>();
+
+
+
+            CreateMap<ICollection<IngredientDto>, Recipe>()
+                .ForMember(m => m.RecipeIngredients, c => c.MapFrom(s => s));
+
+
+            CreateMap<CreateRecipeDto, Recipe>()
+                .ForMember(m => m.RecipeIngredients, c => c.MapFrom(s => s.Ingredients));
         }
     }
 }

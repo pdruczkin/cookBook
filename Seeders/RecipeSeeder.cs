@@ -16,7 +16,7 @@ namespace cookBook.Seeders
                     Description = "refreshing, rum based drink",
                     PrepareTime = 5,
                     SummaryTime = 10,
-                    Ingredients = new List<RecipeIngredient>()
+                    RecipeIngredients = new List<RecipeIngredient>()
                     {
                         new RecipeIngredient()
                         {

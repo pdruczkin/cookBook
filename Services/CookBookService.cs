@@ -38,7 +38,7 @@ namespace cookBook.Services
                 .Recipes
                 .Include(r => r.Steps)
                 .Include(r => r.Difficulty)
-                .Include(r => r.Ingredients)
+                .Include(r => r.RecipeIngredients).ThenInclude(i => i.Ingredient)
                 .ToList();
 
             var recipiesDto = _mapper.Map<List<RecipeDto>>(recipies);
@@ -49,11 +49,13 @@ namespace cookBook.Services
         public RecipeDto Get(int id)
         {
             var recipe = _dbContext
+
                 .Recipes
                 .Include(r => r.Steps)
                 .Include(r => r.Difficulty)
-                .Include(r => r.Ingredients)
+                .Include(r => r.RecipeIngredients).ThenInclude(i => i.Ingredient)
                 .FirstOrDefault(r => r.RecipeId == id);
+                
 
             var recipeDto = _mapper.Map<RecipeDto>(recipe);
 
@@ -62,6 +64,15 @@ namespace cookBook.Services
 
         public int CreateRecipe(CreateRecipeDto dto)
         {
+            var recipeIngredient = _mapper.Map<RecipeIngredient>(dto.Ingredients.FirstOrDefault());
+
+            var ingredient = _mapper.Map<Ingredient>(dto.Ingredients.FirstOrDefault());
+
+            var recipeIngredients = _mapper.Map<ICollection<RecipeIngredient>>(dto.Ingredients);
+
+            var recipe1 = _mapper.Map<Recipe>(dto.Ingredients);
+
+
             var recipe = _mapper.Map<Recipe>(dto);
 
             _dbContext.Recipes.Add(recipe);

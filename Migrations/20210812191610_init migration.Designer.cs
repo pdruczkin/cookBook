@@ -10,8 +10,8 @@ using cookBook.Entities;
 namespace cookBook.Migrations
 {
     [DbContext(typeof(CookBookDbContext))]
-    [Migration("20210804174334_init")]
-    partial class init
+    [Migration("20210812191610_init migration")]
+    partial class initmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -52,7 +52,9 @@ namespace cookBook.Migrations
                         .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Unit")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("IngredientId");
 
