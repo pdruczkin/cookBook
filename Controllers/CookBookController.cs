@@ -54,9 +54,22 @@ namespace cookBook.Controllers
             var id = _service.CreateRecipe(dto);
 
             return Created($"api/cookBook/{id}",null);
-
         }
 
+        [HttpDelete("{id}")]
+        public ActionResult Delete([FromRoute] int id)
+        {
+
+            var isDeleted = _service.Delete(id);
+
+            if (isDeleted)
+            {
+                return NoContent();
+            }
+
+            return NotFound();
+
+        }
 
 
     }
