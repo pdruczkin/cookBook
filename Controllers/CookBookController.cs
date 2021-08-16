@@ -68,9 +68,26 @@ namespace cookBook.Controllers
             }
 
             return NotFound();
-
         }
 
+        [HttpPut("{id}")]
+        public ActionResult Update([FromBody] UpdateRecipeDto dto,[FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
+
+            var isUpdated = _service.Update(id, dto);
+
+            if (!isUpdated)
+            {
+                return NotFound();
+            }
+
+            return Ok();
+        
+        }
     }
 }

@@ -22,7 +22,17 @@ namespace cookBook.Validation
 
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
-            var steps = (List<string>)((CreateRecipeDto) validationContext.ObjectInstance).Steps;
+            
+            List<string> steps = null;
+           
+            if (validationContext.ObjectInstance.GetType().Equals(typeof(CreateRecipeDto)))
+            {
+                steps = (List<string>)((CreateRecipeDto)validationContext.ObjectInstance).Steps;
+            }
+           
+            
+
+
 
             if (steps == null || steps.Count == 0)
             {

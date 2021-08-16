@@ -18,6 +18,8 @@ namespace cookBook.Services
 
         bool Delete(int id);
 
+        bool Update(int id, UpdateRecipeDto dto);
+
     }
 
 
@@ -75,9 +77,17 @@ namespace cookBook.Services
 
             var recipe = _mapper.Map<Recipe>(dto);
 
+            var difficulty = _dbContext.Difficulties.FirstOrDefault(r => r.Name == dto.Difficulty);
+
+           
+
+            if(difficulty != null)
+            {
+                recipe.Difficulty = difficulty;
+            }
+
             _dbContext.Recipes.Add(recipe);
             _dbContext.SaveChanges();
-
 
             return recipe.RecipeId;
         }
@@ -96,6 +106,37 @@ namespace cookBook.Services
             }
 
             _dbContext.Recipes.Remove(recipe);
+            _dbContext.SaveChanges();
+
+            return true;
+
+        }
+
+
+        public bool Update(int id, UpdateRecipeDto dto)
+        {
+            var recipe = _dbContext
+                .Recipes
+                .Include(r => r.RecipeIngredients)
+                .FirstOrDefault(r => r.RecipeId == id);
+
+            if (recipe is null)
+            {
+                return false;
+            }
+
+            recipe.Name = dto.Name;
+            recipe.PrepareTime = dto.PrepareTime;
+            recipe.SummaryTime = dto.SummaryTime;
+            recipe.Description = dto.Description;
+
+
+            var newDifficulty = _dbContext.Difficulties.FirstOrDefault(r => r.Name == dto.Difficulty);
+            recipe.Difficulty = newDifficulty;
+            //recipe.Steps = (List<Step>)_mapper.Map<IEnumerable<Step>>(dto.Steps); ---podencja
+
+
+            
             _dbContext.SaveChanges();
 
             return true;

@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using cookBook.Validation;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using cookBook.Validation;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace cookBook.Models
 {
-    public class CreateRecipeDto
+    public class UpdateRecipeDto
     {
         [Required]
         [MaxLength(50)]
@@ -15,13 +18,7 @@ namespace cookBook.Models
         [Required]
         public int SummaryTime { get; set; }
         [Required]
-        public IEnumerable<IngredientDto> Ingredients { get; set; }
-
-        [Steps(250)]
-        public IEnumerable<string> Steps { get; set; }
-        [Required]
         public string Difficulty { get; set; }
 
-        
     }
 }
