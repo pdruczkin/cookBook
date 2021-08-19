@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using cookBook.Entities;
+using cookBook.Exceptions;
 using cookBook.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -16,9 +17,9 @@ namespace cookBook.Services
 
         int CreateRecipe(CreateRecipeDto dto);
 
-        bool Delete(int id);
+        void Delete(int id);
 
-        bool Update(int id, UpdateRecipeDto dto);
+        void Update(int id, UpdateRecipeDto dto);
 
     }
 
@@ -63,7 +64,8 @@ namespace cookBook.Services
                 .Include(r => r.Difficulty)
                 .Include(r => r.RecipeIngredients).ThenInclude(i => i.Ingredient)
                 .FirstOrDefault(r => r.RecipeId == id);
-                
+
+            if (recipe is null) throw new NotFoundException("Recipe not found");
 
             var recipeDto = _mapper.Map<RecipeDto>(recipe);
 
@@ -92,7 +94,7 @@ namespace cookBook.Services
             return recipe.RecipeId;
         }
 
-        public bool Delete(int id)
+        public void Delete(int id)
         {
             var recipe = _dbContext
                 .Recipes
@@ -100,30 +102,24 @@ namespace cookBook.Services
                 .Include(r => r.RecipeIngredients)
                 .FirstOrDefault(r => r.RecipeId == id);
 
-            if(recipe is null)
-            {
-                return false;
-            }
+            if(recipe is null) throw new NotFoundException("Recipe not found");
+            
 
             _dbContext.Recipes.Remove(recipe);
             _dbContext.SaveChanges();
-
-            return true;
-
         }
 
 
-        public bool Update(int id, UpdateRecipeDto dto)
+        public void Update(int id, UpdateRecipeDto dto)
         {
             var recipe = _dbContext
                 .Recipes
                 .Include(r => r.RecipeIngredients)
                 .FirstOrDefault(r => r.RecipeId == id);
 
-            if (recipe is null)
-            {
-                return false;
-            }
+            if (recipe is null) throw new NotFoundException("Recipe not found");
+            
+            
 
             recipe.Name = dto.Name;
             recipe.PrepareTime = dto.PrepareTime;
@@ -138,8 +134,6 @@ namespace cookBook.Services
 
             
             _dbContext.SaveChanges();
-
-            return true;
 
         }
     }

@@ -8,5 +8,9 @@ namespace cookBook.Entities
         public string Name { get; set; }
         public string Unit { get; set; }
         public int Amount { get; set; }
+
+        public int RecipeIngredientId { get; set; }
+
+        public virtual RecipeIngredient RecipeIngredient { get; set; }
     }
 }

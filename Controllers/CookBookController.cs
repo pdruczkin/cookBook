@@ -9,7 +9,7 @@ using cookBook.Services;
 
 namespace cookBook.Controllers
 {
-    [Route("api/cookBook")]
+    [Route("api/cookBook/recipe")]
     [ApiController]
     public class CookBookController : ControllerBase
     {
@@ -34,11 +34,6 @@ namespace cookBook.Controllers
         {
             var recipe = _service.Get(id);
 
-            if (recipe is null)
-            {
-                return NotFound();
-            }
-
             return Ok(recipe);
         }
 
@@ -46,10 +41,11 @@ namespace cookBook.Controllers
         [HttpPost]
         public ActionResult CreateRecipe([FromBody] CreateRecipeDto dto)
         {
+            /*
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
-            }
+            } not needed because of [ApiController]*/ 
             
             var id = _service.CreateRecipe(dto);
 
@@ -60,31 +56,16 @@ namespace cookBook.Controllers
         public ActionResult Delete([FromRoute] int id)
         {
 
-            var isDeleted = _service.Delete(id);
+            _service.Delete(id);
 
-            if (isDeleted)
-            {
-                return NoContent();
-            }
+            return NoContent();
 
-            return NotFound();
         }
 
         [HttpPut("{id}")]
         public ActionResult Update([FromBody] UpdateRecipeDto dto,[FromRoute] int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-
-            var isUpdated = _service.Update(id, dto);
-
-            if (!isUpdated)
-            {
-                return NotFound();
-            }
+            _service.Update(id, dto);
 
             return Ok();
         

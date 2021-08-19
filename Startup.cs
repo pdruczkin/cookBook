@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using cookBook;
 using cookBook.Seeders;
 using cookBook.Services;
+using cookBook.Middleware;
 
 namespace cookBook
 {
@@ -35,6 +36,9 @@ namespace cookBook
             services.AddScoped<CookBookSeeder>();
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<ICookBookService, CookBookService>();
+            services.AddScoped<IIngredientService, IngredientService>();
+            services.AddScoped<ErrorMiddleware>();
+            services.AddSwaggerGen();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -47,7 +51,15 @@ namespace cookBook
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseMiddleware<ErrorMiddleware>();
+
             app.UseHttpsRedirection();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json","CookBookApi");
+            });
 
             app.UseRouting();
 
