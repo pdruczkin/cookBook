@@ -9,8 +9,8 @@ namespace cookBook.Entities
         public string Unit { get; set; }
         public int Amount { get; set; }
 
-        public int RecipeIngredientId { get; set; }
+        //public int RecipeIngredientId { get; set; }
 
-        public virtual RecipeIngredient RecipeIngredient { get; set; }
+        public virtual ICollection<RecipeIngredient> RecipeIngredient { get; set; }
     }
 }

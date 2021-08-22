@@ -81,12 +81,19 @@ namespace cookBook.Services
 
             var difficulty = _dbContext.Difficulties.FirstOrDefault(r => r.Name == dto.Difficulty);
 
-           
-
             if(difficulty != null)
             {
                 recipe.Difficulty = difficulty;
             }
+
+
+            foreach (var ingredient in dto.Ingredients)
+            {
+                var foundIngredient = _dbContext
+                        .Ingredients
+                        .FirstOrDefault(r => (r.Name == ingredient.Name && r.Amount == ingredient.Amount && r.Unit == ingredient.Unit));
+            }
+            
 
             _dbContext.Recipes.Add(recipe);
             _dbContext.SaveChanges();

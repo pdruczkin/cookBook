@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using AutoMapper;
 using cookBook.Entities;
 using cookBook.Exceptions;
@@ -36,20 +38,70 @@ namespace cookBook.Services
                 .FirstOrDefault(r => r.RecipeId == recipeId);
             if (recipe is null) throw new NotFoundException("Recipe not found");
 
+            var foundIngredient = _dbContext
+                .Ingredients
+                .Include(r => r.RecipeIngredient)
+                .FirstOrDefault(r => (r.Name == dto.Name && r.Amount == dto.Amount && r.Unit == dto.Unit));
 
+            if (foundIngredient != null)
+            {
+                if (foundIngredient.RecipeIngredient.Any(recipeIngredient => recipeIngredient.IngredientId == foundIngredient.IngredientId && recipeIngredient.RecipeId == recipeId))
+                {
+                    throw new Exception("Bad data");//todo
+                }
+
+                return AddNewLink(recipeId, dto, recipe, foundIngredient);
+            }
+            return CreateNew(recipeId, dto, recipe);
+        }
+
+
+
+        private int CreateNew(int recipeId, IngredientDto dto, Recipe recipe)
+        {
             var ingredientEntity = _mapper.Map<Ingredient>(dto);
-            ingredientEntity.RecipeIngredientId = recipeId;
-            
 
-           recipe.RecipeIngredients.Add(new RecipeIngredient()
-           {
-               Ingredient = ingredientEntity, IngredientId = ingredientEntity.IngredientId, Recipe = recipe, RecipeId = recipeId
-           });
+            var newRecipeIngredient = new RecipeIngredient()
+            {
+                Ingredient = ingredientEntity,
+                IngredientId = ingredientEntity.IngredientId,
+                Recipe = recipe,
+                RecipeId = recipeId
+            };
+            recipe.RecipeIngredients.Add(newRecipeIngredient);
+            ingredientEntity.RecipeIngredient = new List<RecipeIngredient>() { newRecipeIngredient };
+
 
             _dbContext.Ingredients.Add(ingredientEntity);
             _dbContext.SaveChanges();
 
             return ingredientEntity.IngredientId;
         }
+        private int AddNewLink(int recipeId, IngredientDto dto, Recipe recipe, Ingredient foundIngredient)
+        {
+            
+            
+            var newRecipeIngredient = new RecipeIngredient()
+            {
+                Ingredient = foundIngredient,
+                IngredientId = foundIngredient.IngredientId,
+                Recipe = recipe,
+                RecipeId = recipeId
+            };
+            
+            recipe.RecipeIngredients.Add(newRecipeIngredient);
+
+            if (foundIngredient.RecipeIngredient == null)
+            {
+                foundIngredient.RecipeIngredient = new List<RecipeIngredient>();
+            }
+            foundIngredient.RecipeIngredient.Add(newRecipeIngredient);
+
+            _dbContext.SaveChanges();
+
+            return foundIngredient.IngredientId;
+        }
     }
+
+
 }
