@@ -78,6 +78,7 @@ namespace cookBook.Services
 
 
             var recipe = _mapper.Map<Recipe>(dto);
+            recipe.RecipeIngredients.Clear();
 
             var difficulty = _dbContext.Difficulties.FirstOrDefault(r => r.Name == dto.Difficulty);
 
@@ -86,19 +87,67 @@ namespace cookBook.Services
                 recipe.Difficulty = difficulty;
             }
 
-
             foreach (var ingredient in dto.Ingredients)
             {
-                var foundIngredient = _dbContext
+                var foundIngredient = 
+                    _dbContext
                         .Ingredients
                         .FirstOrDefault(r => (r.Name == ingredient.Name && r.Amount == ingredient.Amount && r.Unit == ingredient.Unit));
-            }
-            
 
-            _dbContext.Recipes.Add(recipe);
-            _dbContext.SaveChanges();
+                if (foundIngredient != null)
+                {
+                    AddNewLink(recipe.RecipeId, ingredient, recipe, foundIngredient);
+                }
+                else
+                {
+                    CreateNew(recipe.RecipeId, ingredient, recipe);
+                }
+            }
 
             return recipe.RecipeId;
+        }
+
+
+        private void CreateNew(int recipeId, IngredientDto dto, Recipe recipe)
+        {
+            var ingredientEntity = _mapper.Map<Ingredient>(dto);
+
+            var newRecipeIngredient = new RecipeIngredient()
+            {
+                Ingredient = ingredientEntity,
+                IngredientId = ingredientEntity.IngredientId,
+                Recipe = recipe,
+                RecipeId = recipeId
+            };
+            recipe.RecipeIngredients.Add(newRecipeIngredient);
+            ingredientEntity.RecipeIngredient = new List<RecipeIngredient>() { newRecipeIngredient };
+
+
+            _dbContext.Ingredients.Add(ingredientEntity);
+            _dbContext.SaveChanges();
+
+        }
+        private void AddNewLink(int recipeId, IngredientDto dto, Recipe recipe, Ingredient foundIngredient)
+        {
+
+
+            var newRecipeIngredient = new RecipeIngredient()
+            {
+                Ingredient = foundIngredient,
+                IngredientId = foundIngredient.IngredientId,
+                Recipe = recipe,
+                RecipeId = recipeId
+            };
+
+            recipe.RecipeIngredients.Add(newRecipeIngredient);
+
+            if (foundIngredient.RecipeIngredient == null)
+            {
+                foundIngredient.RecipeIngredient = new List<RecipeIngredient>();
+            }
+            foundIngredient.RecipeIngredient.Add(newRecipeIngredient);
+
+            _dbContext.SaveChanges();
         }
 
         public void Delete(int id)
@@ -138,10 +187,7 @@ namespace cookBook.Services
             recipe.Difficulty = newDifficulty;
             //recipe.Steps = (List<Step>)_mapper.Map<IEnumerable<Step>>(dto.Steps); ---podencja
 
-
-            
             _dbContext.SaveChanges();
-
         }
     }
 }
