@@ -25,7 +25,7 @@ namespace cookBook.Controllers
         }
 
         [HttpGet("{ingredientId}")]
-        public ActionResult<IngredientDto> GetById([FromRoute] int recipeId, [FromRoute] int ingredientId)
+        public ActionResult<ShowIngredientDto> GetById([FromRoute] int recipeId, [FromRoute] int ingredientId)
         {
             var ingredient = _service.GetById(recipeId, ingredientId);
 
@@ -33,7 +33,7 @@ namespace cookBook.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<IngredientDto>> Get([FromRoute] int recipeId)
+        public ActionResult<List<ShowIngredientDto>> Get([FromRoute] int recipeId)
         {
             var listOfIngredients = _service.GetAll(recipeId);
 

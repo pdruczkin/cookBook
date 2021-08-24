@@ -12,8 +12,8 @@ namespace cookBook.Services
     public interface IIngredientService
     {
         int Create(int restaurantId, IngredientDto dto);
-        IngredientDto GetById(int recipeId, int ingredientId);
-        List<IngredientDto> GetAll(int recipeId);
+        ShowIngredientDto GetById(int recipeId, int ingredientId);
+        List<ShowIngredientDto> GetAll(int recipeId);
     }
 
 
@@ -105,7 +105,7 @@ namespace cookBook.Services
         
         
         
-        public IngredientDto GetById(int recipeId, int ingredientId)
+        public ShowIngredientDto GetById(int recipeId, int ingredientId)
         {
             var recipe = _dbContext
                 .Recipes
@@ -130,13 +130,13 @@ namespace cookBook.Services
                 throw new NotFoundException("Ingredient not found in recipe");
             }
 
-            var ingredientDto = _mapper.Map<IngredientDto>(ingredient);
+            var ingredientDto = _mapper.Map<ShowIngredientDto>(ingredient);
 
 
             return ingredientDto;
         }
 
-        public List<IngredientDto> GetAll(int recipeId)
+        public List<ShowIngredientDto> GetAll(int recipeId)
         {
             var recipe = _dbContext
                 .Recipes
@@ -150,7 +150,7 @@ namespace cookBook.Services
 
             var listOfIngredient = recipe.RecipeIngredients.Select(recipeIngredient => recipeIngredient.Ingredient).ToList();
 
-            var listOfIngredientDtos = _mapper.Map<List<IngredientDto>>(listOfIngredient);
+            var listOfIngredientDtos = _mapper.Map<List<ShowIngredientDto>>(listOfIngredient);
 
             return listOfIngredientDtos;
         }
