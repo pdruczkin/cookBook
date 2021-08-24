@@ -12,6 +12,8 @@ namespace cookBook.Services
     public interface IIngredientService
     {
         int Create(int restaurantId, IngredientDto dto);
+        IngredientDto GetById(int recipeId, int ingredientId);
+        List<IngredientDto> GetAll(int recipeId);
     }
 
 
@@ -54,8 +56,6 @@ namespace cookBook.Services
             }
             return CreateNew(recipeId, dto, recipe);
         }
-
-
 
         private int CreateNew(int recipeId, IngredientDto dto, Recipe recipe)
         {
@@ -100,6 +100,59 @@ namespace cookBook.Services
             _dbContext.SaveChanges();
 
             return foundIngredient.IngredientId;
+        }
+
+        
+        
+        
+        public IngredientDto GetById(int recipeId, int ingredientId)
+        {
+            var recipe = _dbContext
+                .Recipes
+                .Include(r => r.RecipeIngredients).ThenInclude(i => i.Ingredient)
+                .FirstOrDefault(r => r.RecipeId == recipeId);
+
+
+            if (recipe is null)
+            {
+                throw new NotFoundException("Recipe not found");
+            }
+
+            var ingredient = _dbContext.Ingredients.FirstOrDefault(i => i.IngredientId == ingredientId);
+
+            if (ingredient is null)
+            {
+                throw new NotFoundException("Ingredient not found");
+            }
+
+            if (recipe.RecipeIngredients.Any(ing => ing.IngredientId == ingredientId) == false)
+            {
+                throw new NotFoundException("Ingredient not found in recipe");
+            }
+
+            var ingredientDto = _mapper.Map<IngredientDto>(ingredient);
+
+
+            return ingredientDto;
+        }
+
+        public List<IngredientDto> GetAll(int recipeId)
+        {
+            var recipe = _dbContext
+                .Recipes
+                .Include(r => r.RecipeIngredients).ThenInclude(i => i.Ingredient)
+                .FirstOrDefault(r => r.RecipeId == recipeId);
+
+            if (recipe is null)
+            {
+                throw new NotFoundException("Recipe not found");
+            }
+
+            var listOfIngredient = recipe.RecipeIngredients.Select(recipeIngredient => recipeIngredient.Ingredient).ToList();
+
+            var listOfIngredientDtos = _mapper.Map<List<IngredientDto>>(listOfIngredient);
+
+            return listOfIngredientDtos;
         }
     }
 

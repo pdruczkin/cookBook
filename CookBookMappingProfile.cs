@@ -53,6 +53,11 @@ namespace cookBook
 
             CreateMap<CreateRecipeDto, Recipe>()
                 .ForMember(m => m.RecipeIngredients, c => c.MapFrom(s => s.Ingredients));
+
+
+            CreateMap<Ingredient, IngredientDto>();
+
+            //CreateMap<List<Ingredient>,List<IngredientDto>>();
         }
     }
 }
