@@ -14,6 +14,7 @@ namespace cookBook.Services
         int Create(int restaurantId, IngredientDto dto);
         ShowIngredientDto GetById(int recipeId, int ingredientId);
         List<ShowIngredientDto> GetAll(int recipeId);
+        void Delete(int recipeId, int ingredientId);
     }
 
 
@@ -154,7 +155,28 @@ namespace cookBook.Services
 
             return listOfIngredientDtos;
         }
+
+        public void Delete(int recipeId, int ingredientId)
+        {
+            var recipe = _dbContext
+                .Recipes
+                .Include(r => r.Steps)
+                .Include(r => r.RecipeIngredients)
+                .FirstOrDefault(r => r.RecipeId == recipeId);
+
+            if (recipe is null) throw new NotFoundException("Recipe not found");
+
+            if (recipe.RecipeIngredients.Any(ing => ing.IngredientId == ingredientId) == false)
+            {
+                throw new NotFoundException("Ingredient not found in recipe");
+            }
+
+            _dbContext.Remove(recipe.RecipeIngredients.First(ri => ri.IngredientId == ingredientId));
+            _dbContext.SaveChanges();
+
+
+        }
+
+        
     }
-
-
 }

@@ -41,6 +41,14 @@ namespace cookBook.Controllers
 
         }
 
+        [HttpDelete("{ingredientId}")]
+        public ActionResult DeleteById([FromRoute] int recipeId, [FromRoute] int ingredientId)
+        {
+            _service.Delete(recipeId,ingredientId);
+
+            return NoContent();
+        }
+
     }
 
 

@@ -152,10 +152,11 @@ namespace cookBook.Services
 
         public void Delete(int id)
         {
+            //var ingredient = _dbContext.Ingredients.FirstOrDefault(i => i.IngredientId == 24);
             var recipe = _dbContext
                 .Recipes
                 .Include(r => r.Steps)
-                .Include(r => r.RecipeIngredients)
+                .Include(r => r.RecipeIngredients).ThenInclude(i => i.Ingredient)
                 .FirstOrDefault(r => r.RecipeId == id);
 
             if(recipe is null) throw new NotFoundException("Recipe not found");
