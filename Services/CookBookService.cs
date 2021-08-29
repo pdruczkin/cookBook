@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using cookBook.Entities;
+using cookBook.Entities.Api;
 using cookBook.Exceptions;
 using cookBook.Models;
 using Microsoft.EntityFrameworkCore;

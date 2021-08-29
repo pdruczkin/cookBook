@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace cookBook.Entities
+namespace cookBook.Entities.Api
 {
     public class Step
     {

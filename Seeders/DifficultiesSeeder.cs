@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using cookBook.Entities.DifficultyProperties;
+using cookBook.Entities.Api;
 
 namespace cookBook.Seeders
 {

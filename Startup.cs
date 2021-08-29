@@ -12,9 +12,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using cookBook;
+using cookBook.Entities.Users;
 using cookBook.Seeders;
 using cookBook.Services;
 using cookBook.Middleware;
+using cookBook.Models;
+using cookBook.Models.Validators;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace cookBook
 {
@@ -32,11 +38,15 @@ namespace cookBook
         {
 
             services.AddControllers();
+            services.AddFluentValidation();
             services.AddDbContext<CookBookDbContext>();
             services.AddScoped<CookBookSeeder>();
             services.AddAutoMapper(this.GetType().Assembly);
             services.AddScoped<ICookBookService, CookBookService>();
             services.AddScoped<IIngredientService, IngredientService>();
+            services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+            services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
             services.AddScoped<ErrorMiddleware>();
             services.AddSwaggerGen();
         }
@@ -50,6 +60,7 @@ namespace cookBook
             {
                 app.UseDeveloperExceptionPage();
             }
+            ValidatorOptions.Global.LanguageManager.Enabled = false;
 
             app.UseMiddleware<ErrorMiddleware>();
 

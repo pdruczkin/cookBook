@@ -1,4 +1,4 @@
-﻿namespace cookBook.Entities
+﻿namespace cookBook.Entities.Api
 {
     public class RecipeIngredient
     {

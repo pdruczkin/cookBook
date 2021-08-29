@@ -3,7 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using cookBook.Entities.DifficultyProperties;
+using cookBook.Entities.Api;
+using cookBook.Entities.Users;
 
 namespace cookBook.Entities
 {
@@ -15,6 +16,9 @@ namespace cookBook.Entities
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<Difficulty> Difficulties { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -46,10 +50,18 @@ namespace cookBook.Entities
                 .IsRequired()
                 .HasMaxLength(50);
 
-
-
             modelBuilder.Entity<RecipeIngredient>()
                 .HasKey(x => new {x.RecipeId, x.IngredientId});
+
+
+
+            //Users
+            modelBuilder.Entity<User>()
+                .Property(r => r.Email)
+                .IsRequired();
+            modelBuilder.Entity<Role>()
+                .Property(r => r.Name)
+                .IsRequired();
 
 
 

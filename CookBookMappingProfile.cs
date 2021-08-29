@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using cookBook.Entities;
-using cookBook.Entities.DifficultyProperties;
+using cookBook.Entities.Api;
+using cookBook.Entities.Users;
 using cookBook.Models;
 
 namespace cookBook
@@ -56,6 +57,8 @@ namespace cookBook
 
 
             CreateMap<Ingredient, ShowIngredientDto>();
+
+            CreateMap<RegisterUserDto, User>();
 
         }
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace cookBook.Entities.DifficultyProperties
+namespace cookBook.Entities.Api
 {
     public class Difficulty
     {
@@ -11,7 +11,5 @@ namespace cookBook.Entities.DifficultyProperties
 
         public string Name { get; set; }
 
-        public IEnumerable<Recipe> Recipes { get; set; }
-        
     }
 }

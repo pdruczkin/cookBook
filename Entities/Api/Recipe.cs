@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
-using cookBook.Entities.DifficultyProperties;
 
 
-namespace cookBook.Entities
+
+namespace cookBook.Entities.Api
 {
     public class Recipe
     {

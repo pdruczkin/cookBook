@@ -29,6 +29,13 @@ namespace cookBook.Seeders
                     _dbContext.AddRange(RecipeSeeder.GetRecipes());
                     _dbContext.SaveChanges();
                 }
+
+                if (!_dbContext.Roles.Any())
+                {
+                    _dbContext.AddRange(RolesSeeder.GetRoles());
+                    _dbContext.SaveChanges();
+                }
+
             }
         }
     }
