@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using cookBook.Validation;
+using cookBook.Models.Validators;
 
 namespace cookBook.Models
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using cookBook.Entities;
 using cookBook.Models;
 
-namespace cookBook.Validation
+namespace cookBook.Models.Validators
 {
     public class StepsAttribute : ValidationAttribute
     {

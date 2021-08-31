@@ -23,5 +23,13 @@ namespace cookBook.Controllers
             return Ok();
         }
 
+        [HttpPost("login")]
+        public ActionResult Login([FromBody] LoginDto dto)
+        {
+            var token = _service.GenerateJwtToken(dto);
+
+            return Ok(token);
+
+        }
     }
 }
