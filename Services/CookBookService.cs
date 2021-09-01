@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using AutoMapper;
+using cookBook.Authorization;
 using cookBook.Entities;
 using cookBook.Entities.Api;
 using cookBook.Exceptions;
 using cookBook.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -32,12 +35,18 @@ namespace cookBook.Services
         private readonly IMapper _mapper;
 
         private readonly ILogger<CookBookService> _logger;
+        
+        private readonly IAuthorizationService _authorizationService;
 
-        public CookBookService(CookBookDbContext dbContext, IMapper mapper, ILogger<CookBookService> logger)
+        private readonly IUserContextService _userContextService;
+
+        public CookBookService(CookBookDbContext dbContext, IMapper mapper, ILogger<CookBookService> logger, IAuthorizationService authorizationService, IUserContextService userContextService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _logger = logger;
+            _authorizationService = authorizationService;
+            _userContextService = userContextService;
         }
 
 
@@ -79,7 +88,11 @@ namespace cookBook.Services
 
 
             var recipe = _mapper.Map<Recipe>(dto);
+
+            recipe.CreatedById = _userContextService.GetUserId; 
+
             recipe.RecipeIngredients.Clear();
+
 
             var difficulty = _dbContext.Difficulties.FirstOrDefault(r => r.Name == dto.Difficulty);
 
@@ -153,7 +166,7 @@ namespace cookBook.Services
 
         public void Delete(int id)
         {
-            //var ingredient = _dbContext.Ingredients.FirstOrDefault(i => i.IngredientId == 24);
+            
             var recipe = _dbContext
                 .Recipes
                 .Include(r => r.Steps)
@@ -161,7 +174,16 @@ namespace cookBook.Services
                 .FirstOrDefault(r => r.RecipeId == id);
 
             if(recipe is null) throw new NotFoundException("Recipe not found");
-            
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, recipe,
+                new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
+
+
 
             _dbContext.Recipes.Remove(recipe);
             _dbContext.SaveChanges();
@@ -170,14 +192,23 @@ namespace cookBook.Services
 
         public void Update(int id, UpdateRecipeDto dto)
         {
+            
+
             var recipe = _dbContext
                 .Recipes
                 .Include(r => r.RecipeIngredients)
                 .FirstOrDefault(r => r.RecipeId == id);
 
             if (recipe is null) throw new NotFoundException("Recipe not found");
-            
-            
+
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, recipe,
+                new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
+
 
             recipe.Name = dto.Name;
             recipe.PrepareTime = dto.PrepareTime;
