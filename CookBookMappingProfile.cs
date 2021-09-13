@@ -60,6 +60,7 @@ namespace cookBook
 
             CreateMap<RegisterUserDto, User>();
 
+            CreateMap<Step, string>().ConstructUsing(s => s.Description);
         }
     }
 }

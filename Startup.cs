@@ -71,6 +71,7 @@ namespace cookBook
             services.AddScoped<ICookBookService, CookBookService>();
             services.AddScoped<IIngredientService, IngredientService>();
             services.AddScoped<IAccountService, AccountService>();
+            services.AddScoped<IStepsService, StepsService>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
             services.AddScoped<ErrorMiddleware>();
