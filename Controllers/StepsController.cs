@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using cookBook.Models;
 using cookBook.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -25,8 +26,34 @@ namespace cookBook.Controllers
             return Ok(stepsDto);
         }
 
+        [HttpPut]
+        public ActionResult ModifySteps([FromRoute] int recipeId,[FromBody] List<string> newSteps)
+        {
 
+            if (newSteps == null || newSteps.Any(s => s.Length > 250))
+            {
+                ModelState.AddModelError("Steps","Steps can't be null and any step can't have more than 250 letters");
+            }
 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            _stepsService.Update(recipeId, newSteps);
+
+            return Ok();
+        }
+
+        [HttpDelete]
+        public ActionResult Delete([FromRoute] int recipeId)
+        {
+
+            _stepsService.Delete(recipeId);
+
+            return NoContent();
+
+        }
 
     }
 }

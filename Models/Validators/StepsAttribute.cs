@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using cookBook.Entities;
@@ -23,9 +24,9 @@ namespace cookBook.Models.Validators
         protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
         {
             
-            List<string> steps = null;
+            List<string> steps = null!;
            
-            if (validationContext.ObjectInstance.GetType().Equals(typeof(CreateRecipeDto)))
+            if (validationContext.ObjectInstance.GetType() == typeof(CreateRecipeDto))
             {
                 steps = (List<string>)((CreateRecipeDto)validationContext.ObjectInstance).Steps;
             }
