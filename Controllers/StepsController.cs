@@ -2,11 +2,13 @@
 using System.Linq;
 using cookBook.Models;
 using cookBook.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cookBook.Controllers
 {
     [Route("api/cookBook/{recipeId}/steps")]
+    [Authorize]
     [ApiController]
     public class StepsController : ControllerBase
     {
@@ -27,6 +29,7 @@ namespace cookBook.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin,Manager")]
         public ActionResult ModifySteps([FromRoute] int recipeId,[FromBody] List<string> newSteps)
         {
 
@@ -46,6 +49,7 @@ namespace cookBook.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Admin,Manager")]
         public ActionResult Delete([FromRoute] int recipeId)
         {
 

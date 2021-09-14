@@ -5,6 +5,7 @@ namespace cookBook.Authorization
     public enum ResourceOperation
     {
         Create,
+        AddToExisted,
         Read,
         Update,
         Delete

@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using cookBook.Authorization;
 using cookBook.Entities;
 using cookBook.Entities.Api;
 
 using cookBook.Exceptions;
 using cookBook.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace cookBook.Services
@@ -26,11 +28,15 @@ namespace cookBook.Services
     {
         private readonly CookBookDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly IAuthorizationService _authorizationService;
+        private readonly IUserContextService _userContextService;
 
-        public IngredientService(CookBookDbContext dbContext, IMapper mapper)
+        public IngredientService(CookBookDbContext dbContext, IMapper mapper, IAuthorizationService authorizationService, IUserContextService userContextService) 
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _authorizationService = authorizationService;
+            _userContextService = userContextService;
         }
 
         public int Create(int recipeId, IngredientDto dto)
@@ -42,6 +48,17 @@ namespace cookBook.Services
                 .Include(r => r.RecipeIngredients).ThenInclude(i => i.Ingredient)
                 .FirstOrDefault(r => r.RecipeId == recipeId);
             if (recipe is null) throw new NotFoundException("Recipe not found");
+
+            
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, recipe,
+                new ResourceOperationRequirement(ResourceOperation.AddToExisted)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
+
+
 
             var foundIngredient = _dbContext
                 .Ingredients
@@ -59,7 +76,6 @@ namespace cookBook.Services
             }
             return CreateNew(recipeId, dto, recipe);
         }
-
         private int CreateNew(int recipeId, IngredientDto dto, Recipe recipe)
         {
             var ingredientEntity = _mapper.Map<Ingredient>(dto);
@@ -105,8 +121,6 @@ namespace cookBook.Services
             return foundIngredient.IngredientId;
         }
 
-        
-        
         
         public ShowIngredientDto GetById(int recipeId, int ingredientId)
         {
@@ -168,6 +182,15 @@ namespace cookBook.Services
 
             if (recipe is null) throw new NotFoundException("Recipe not found");
 
+            var authorizationResult = _authorizationService.AuthorizeAsync(_userContextService.User, recipe,
+                new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException();
+            }
+
+
             if (recipe.RecipeIngredients.Any(ing => ing.IngredientId == ingredientId) == false)
             {
                 throw new NotFoundException("Ingredient not found in recipe");
@@ -176,9 +199,6 @@ namespace cookBook.Services
             _dbContext.Remove(recipe.RecipeIngredients.First(ri => ri.IngredientId == ingredientId));
             _dbContext.SaveChanges();
 
-
         }
-
-        
     }
 }

@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using cookBook.Models;
 using cookBook.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace cookBook.Controllers
 {
     [Route("api/cookBook/{recipeId}/ingredient")]
+    [Authorize]
     [ApiController]
     public class IngredientController : ControllerBase
     {
@@ -17,6 +19,7 @@ namespace cookBook.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin,Manager")]
         public ActionResult AddIngredient([FromRoute] int recipeId, [FromBody] IngredientDto dto)
         {
             var newIngredientId = _service.Create(recipeId, dto);
@@ -42,6 +45,7 @@ namespace cookBook.Controllers
         }
 
         [HttpDelete("{ingredientId}")]
+        [Authorize(Roles = "Admin,Manager")]
         public ActionResult DeleteById([FromRoute] int recipeId, [FromRoute] int ingredientId)
         {
             _service.Delete(recipeId,ingredientId);

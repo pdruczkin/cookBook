@@ -52,7 +52,7 @@ namespace cookBook.Controllers
                 return BadRequest(ModelState);
             } not needed because of [ApiController]*/
 
-            var userId = int.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            //var userId = int.Parse(User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value);
 
             var id = _service.CreateRecipe(dto);
 

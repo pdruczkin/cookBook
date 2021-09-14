@@ -218,7 +218,7 @@ namespace cookBook.Services
 
             var newDifficulty = _dbContext.Difficulties.FirstOrDefault(r => r.Name == dto.Difficulty);
             recipe.Difficulty = newDifficulty;
-            //recipe.Steps = (List<Step>)_mapper.Map<IEnumerable<Step>>(dto.Steps); ---podencja
+            
 
             _dbContext.SaveChanges();
         }
