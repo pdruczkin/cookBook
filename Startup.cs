@@ -74,15 +74,24 @@ namespace cookBook
             services.AddScoped<IStepsService, StepsService>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
+            services.AddScoped<IValidator<RecipeQuery>, RecipeQueryValidator>();
             services.AddScoped<ErrorMiddleware>();
             services.AddScoped<IUserContextService, UserContextService>();
             services.AddHttpContextAccessor();
             services.AddSwaggerGen();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("FrontClient", builder =>
+                {
+                    builder.AllowAnyMethod().AllowAnyHeader().WithOrigins(Configuration["AllowedOrigin"]);
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, CookBookSeeder seeder)
         {
+            app.UseCors("FrontClient");
             seeder.Seed();
             
             if (env.IsDevelopment())

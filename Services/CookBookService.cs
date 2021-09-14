@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Claims;
 using AutoMapper;
 using cookBook.Authorization;
@@ -16,7 +17,7 @@ namespace cookBook.Services
 {
     public interface ICookBookService
     {
-        IEnumerable<RecipeDto> GetAll();
+        PageResult<RecipeDto> GetAll(RecipeQuery query);
         RecipeDto Get(int id);
 
         int CreateRecipe(CreateRecipeDto dto);
@@ -50,20 +51,47 @@ namespace cookBook.Services
         }
 
 
-        public IEnumerable<RecipeDto> GetAll()
+        public PageResult<RecipeDto> GetAll(RecipeQuery query)
         {
            
-
-            var recipies = _dbContext
+            var baseQuery = _dbContext
                 .Recipes
                 .Include(r => r.Steps)
                 .Include(r => r.Difficulty)
                 .Include(r => r.RecipeIngredients).ThenInclude(i => i.Ingredient)
+                .Where(r => query.SearchPhrase == null || (r.Name.ToLower().Contains(query.SearchPhrase.ToLower())
+                                                           || r.Description.ToLower()
+                                                               .Contains(query.SearchPhrase.ToLower())));
+
+            if (!string.IsNullOrEmpty(query.SortBy))
+            {
+                var columnsSelector = new Dictionary<string, Expression<Func<Recipe, object>>>
+                {
+                    { nameof(Recipe.Name), r => r.Name },
+                    { nameof(Recipe.Description), r => r.Description }
+                };
+
+                var selectedColumn = columnsSelector[query.SortBy];
+
+                baseQuery = query.SortDirection == SortDirection.Asc
+                    ? baseQuery.OrderBy(r => r.Name)
+                    : baseQuery.OrderByDescending(r => r.Description);
+            }
+
+            var recipies = baseQuery
+                .Skip((query.PageNumber - 1) * query.PageSize)
+                .Take(query.PageSize)
                 .ToList();
 
             var recipiesDto = _mapper.Map<List<RecipeDto>>(recipies);
 
-            return recipiesDto;
+
+            var totalAmount = baseQuery.Count();
+
+
+            var pageResult = new PageResult<RecipeDto>(recipiesDto, totalAmount, query.PageSize, query.PageNumber);
+
+            return pageResult;
         }
 
         public RecipeDto Get(int id)

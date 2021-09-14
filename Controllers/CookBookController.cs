@@ -25,11 +25,11 @@ namespace cookBook.Controllers
 
 
         [HttpGet]
-        public ActionResult<IEnumerable<RecipeDto>> GetAll()
+        public ActionResult<IEnumerable<RecipeDto>> GetAll([FromQuery] RecipeQuery query)
         {
-            var recipes = _service.GetAll();
+            var result = _service.GetAll(query);
             
-            return Ok(recipes);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
